@@ -3,19 +3,14 @@ import { useRouter } from 'next/navigation'
 import React, { useRef } from 'react'
 import toast, { Toaster } from 'react-hot-toast'
 import { headers } from 'next/headers'
+import { getApiBase } from '@/app/utils/getApiBase'
 
 const postblog = async (
   title: string | undefined,
   description: string | undefined,
 ) => {
-  const headersData = headers()
-  const host = headersData.get('host')
-  const protocol =
-    headersData.get('x-forwarded-proto') ?? host?.startsWith('localhost')
-      ? 'http'
-      : 'https'
-  const apiBase = `${protocol}://${host}`
-
+  const apiBase = process.env.API_BASE
+  // console.log(apiBase)
   const res = await fetch(`${apiBase}/api/blog`, {
     method: 'POST',
     headers: {
