@@ -1,15 +1,29 @@
 'use client'
 import { get } from 'http'
+import { headers } from 'next/headers'
 import { useRouter } from 'next/navigation'
 import React, { useEffect, useRef } from 'react'
 import toast, { Toaster } from 'react-hot-toast'
+
+const getApiBase = () => {
+  const headersData = headers()
+  const host = headersData.get('host')
+  const protocol =
+    headersData.get('x-forwarded-proto') ?? host?.startsWith('localhost')
+      ? 'http'
+      : 'https'
+  const apiBase = `${protocol}://${host}`
+
+  return apiBase
+}
 
 const editblog = async (
   id: number,
   title: string | undefined,
   description: string | undefined,
 ) => {
-  const res = await fetch(`http://localhost:3000/api/blog/${id}`, {
+  const apiBase = getApiBase()
+  const res = await fetch(`${apiBase}/api/blog/${id}`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
@@ -25,7 +39,8 @@ const editblog = async (
 }
 
 const getblogById = async (id: number) => {
-  const res = await fetch(`http://localhost:3000/api/blog/${id}`, {
+  const apiBase = getApiBase()
+  const res = await fetch(`${getApiBase}/api/blog/${id}`, {
     method: 'GET',
   })
 
@@ -35,7 +50,8 @@ const getblogById = async (id: number) => {
 }
 
 const deleteblog = async (id: number) => {
-  const res = await fetch(`http://localhost:3000/api/blog/${id}`, {
+  const apiBase = getApiBase()
+  const res = await fetch(`${apiBase}/api/blog/${id}`, {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',

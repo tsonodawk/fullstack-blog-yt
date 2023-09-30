@@ -1,9 +1,18 @@
 import { PostType } from '@/types'
+import { headers } from 'next/headers'
 import Image from 'next/image'
 import Link from 'next/link'
 
 const fetchAllBlogs = async () => {
-  const res = await fetch('http://localhost:3000/api/blog', {
+  const headersData = headers()
+  const host = headersData.get('host')
+  const protocol =
+    headersData.get('x-forwarded-proto') ?? host?.startsWith('localhost')
+      ? 'http'
+      : 'https'
+  const apiBase = `${protocol}://${host}`
+
+  const res = await fetch(`${apiBase}/api/blog`, {
     cache: 'no-cache',
   })
   const data = await res.json()
